@@ -1,7 +1,9 @@
+import { Clock } from './components/Clock';
+
 export const App = () => {
   return (
-    <div className="App">
-      <h1 className="text-3xl font-bold underline">Hello World</h1>
+    <div className="bg-[#d95550] min-h-screen w-full ">
+      <Clock />
     </div>
   );
 };
