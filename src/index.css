@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .btn-clock {
+    @apply rounded border-none text-base py-0.5 px-3 h-7 cursor-pointer text-white font-bold focus:bg-[#a15e5c];
+  }
+}
+
