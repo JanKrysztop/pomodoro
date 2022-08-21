@@ -1,19 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export const Clock = () => {
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
+  const [color, setColor] = useState('#ee7c78');
+  const [mode, setMode] = useState('pomodoro');
   const [countdown, setCountdown] = useState(false);
-  const [view, setView] = useState({
-    currentView: 'pomodoro',
-  });
 
   const timerMinutes = minutes < 10 ? `0${minutes}` : minutes;
   const timerSeconds = seconds < 10 ? `0${seconds}` : seconds;
 
-  if (countdown) {
-    const interval = setInterval(() => {
-      clearInterval(interval);
+  useEffect(() => {
+    if (countdown === false) {
+      return;
+    }
+
+    const id = setInterval(() => {
       if (seconds === 0) {
         if (minutes !== 0) {
           setSeconds(59);
@@ -26,50 +28,35 @@ export const Clock = () => {
         setSeconds(seconds - 1);
       }
     }, 1000);
-  }
+
+    return () => {
+      clearInterval(id);
+    };
+  }, [countdown]);
 
   const switchView = (view) => {
     switch (view) {
       case 'pomodoro':
         setMinutes(25);
         setSeconds(0);
-        return (
-          <>
-            {timerMinutes}:{timerSeconds}
-          </>
-        );
+        setColor('#ee7c78');
+        setMode(view);
+        break;
       case 'shortBreak':
         setMinutes(5);
         setSeconds(0);
-        return (
-          <>
-            {timerMinutes}:{timerSeconds}
-          </>
-        );
+        setColor('#336699');
+        setMode(view);
+        break;
       case 'longBreak':
         setMinutes(15);
         setSeconds(0);
-        return (
-          <>
-            {timerMinutes}:{timerSeconds}
-          </>
-        );
+        setColor('#009900');
+        setMode(view);
+        break;
       default:
         return null;
     }
-  };
-
-  const pomodoroView = () => {
-    setMinutes(25);
-    setSeconds(0);
-  };
-  const shortBreakView = () => {
-    setMinutes(5);
-    setSeconds(0);
-  };
-  const longBreakView = () => {
-    setMinutes(15);
-    setSeconds(0);
   };
 
   const handleClick = () => {
@@ -77,16 +64,28 @@ export const Clock = () => {
   };
 
   return (
-    <div className="bg-[#e9d5d4] m-auto flex justify-center align-middle max-w-[620px]">
-      <div className="max-w-[480px] w-full bg-[#ee7c78] pt-5 pb-6 rounded-md">
+    <div className="m-auto flex justify-center align-middle max-w-[620px]">
+      <div
+        className={`max-w-[480px] w-full pt-5 pb-6 rounded-md`}
+        style={{ backgroundColor: color }}
+      >
         <div className="flex justify-center align-middle">
-          <button className="btn-clock" onClick={() => pomodoroView()}>
+          <button
+            className={`btn-clock ${mode === 'pomodoro' && 'btn-active'}`}
+            onClick={() => switchView('pomodoro')}
+          >
             Pomodoro
           </button>
-          <button className="btn-clock" onClick={() => shortBreakView()}>
+          <button
+            className={`btn-clock ${mode === 'shortBreak' && 'btn-active'}`}
+            onClick={() => switchView('shortBreak')}
+          >
             Short Break
           </button>
-          <button className="btn-clock" onClick={() => longBreakView()}>
+          <button
+            className={`btn-clock ${mode === 'longBreak' && 'btn-active'}`}
+            onClick={() => switchView('longBreak')}
+          >
             Long Break
           </button>
         </div>
